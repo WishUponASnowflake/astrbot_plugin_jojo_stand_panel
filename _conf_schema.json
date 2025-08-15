@@ -1,0 +1,15 @@
+{
+  "api_server": {
+    "description": "API服务器地址",
+    "type": "text",
+    "hint": "默认：https://api.tripleying.com/api/chart",
+    "obvious_hint": true,
+    "default": "https://api.tripleying.com/api/chart"
+  },
+  "white_list": {
+    "description": "群聊白名单",
+    "type": "list",
+    "hint": "数字ID",
+    "obvious_hint": true
+  }
+}
