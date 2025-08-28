@@ -1,5 +1,5 @@
 name: astrbot_plugin_jojo_stand_panel
 desc: 调用TripleYing的API生成JOJO替身面板图片
-version: v1.0.0
+version: v2.0.0
 author: Dogend
 repo: https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel

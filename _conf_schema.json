@@ -6,10 +6,66 @@
     "obvious_hint": true,
     "default": "https://api.tripleying.com/api/chart"
   },
+  "enable_whitelist": {
+    "description": "启用群聊白名单",
+    "type": "bool",
+    "hint": "关闭后所有群聊都可使用插件",
+    "obvious_hint": true,
+    "default": true
+  },
   "white_list": {
     "description": "群聊白名单",
     "type": "list",
     "hint": "数字ID",
     "obvious_hint": true
+  },
+  "random_cooldown": {
+    "description": "随机替身冷却时间",
+    "type": "int",
+    "hint": "秒",
+    "obvious_hint": true,
+    "default": 300
+  },
+  "enable_set_stand": {
+    "description": "启用设置替身指令",
+    "type": "bool",
+    "hint": "关闭后禁用/设置替身指令",
+    "obvious_hint": true,
+    "default": true
+  },
+  "enable_view_others_stand": {
+    "description": "启用他的替身指令",
+    "type": "bool",
+    "hint": "关闭后禁用/他的替身指令",
+    "obvious_hint": true,
+    "default": true
+  },
+  "enable_awaken_system": {
+    "description": "启用觉醒系统",
+    "type": "bool",
+    "hint": "关闭后将禁用觉醒替身和重新觉醒指令",
+    "obvious_hint": true,
+    "default": true
+  },
+  "daily_awaken_limit": {
+    "description": "每日觉醒次数限制",
+    "type": "int",
+    "hint": "设置为-1时不限次数，0禁用觉醒，大于0设置每日限制次数",
+    "obvious_hint": true,
+    "default": 1
+  },
+  "stand_name_prefixes": {
+    "description": "随机替身名称前缀词库",
+    "type": "list",
+    "hint": "每行一个前缀词，如：白金、黄金、钻石等",
+    "obvious_hint": true,
+    "default": ["白金", "黄金", "钻石", "紫金", "银色", "黑暗", "光辉", "烈焰", "寒冰", "雷电", "疾风", "大地", "天空", "星辰", "月光", "太阳", "深渊", "圣洁", "魔法", "神秘", "极光", "暴风", "海洋", "森林", "山峰", "火焰", "水晶", "虹彩", "幻影", "永恒"]
+  },
+  "stand_name_suffixes": {
+    "description": "随机替身名称后缀词库",
+    "type": "list",
+    "hint": "每行一个后缀词，如：之星、使者、战士等",
+    "obvious_hint": true,
+    "default": ["之星", "使者", "战士", "守护", "刃", "翼", "之力", "王者", "骑士", "法师", "之心", "灵魂", "命运", "审判", "制裁", "救赎", "希望", "梦想", "传说", "神话", "奇迹", "光芒", "影子", "风暴", "烈火", "寒霜", "雷鸣", "波涛", "山岳", "天使"]
   }
 }
