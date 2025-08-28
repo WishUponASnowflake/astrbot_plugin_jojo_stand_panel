@@ -4,7 +4,7 @@
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-green)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-orange)](./LICENSE)
 
-一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能。
+一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能。一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能。
 
 ## 📸 效果展示
 
