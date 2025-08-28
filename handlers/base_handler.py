@@ -1,7 +1,7 @@
 """
 替身指令处理器基类
 """
-import datetime
+
 from typing import Optional
 from astrbot.api.event import AstrMessageEvent
 from astrbot.core.platform.message_type import MessageType
@@ -10,20 +10,26 @@ import astrbot.api.message_components as Comp
 
 from ..services.stand_data_service import StandDataService
 from ..services.api_service import StandAPIService
-from ..utils.ability_utils import AbilityUtils
 from ..utils.config_manager import ConfigManager
 from ..utils.cooldown_manager import CooldownManager
 
 
 class BaseStandHandler:
     """替身指令处理器基类"""
-    
-    def __init__(self, data_service: StandDataService, api_service: StandAPIService, 
-                 cooldown_manager: CooldownManager, group_white_list: list, timezone,
-                 stand_name_generator, config_manager: ConfigManager):
+
+    def __init__(
+        self,
+        data_service: StandDataService,
+        api_service: StandAPIService,
+        cooldown_manager: CooldownManager,
+        group_white_list: list,
+        timezone,
+        stand_name_generator,
+        config_manager: ConfigManager,
+    ):
         """
         初始化处理器
-        
+
         Args:
             data_service: 数据服务
             api_service: API服务
@@ -40,31 +46,33 @@ class BaseStandHandler:
         self.timezone = timezone
         self.stand_name_generator = stand_name_generator
         self.config_manager = config_manager
-    
+
     def check_group_permission(self, event: AstrMessageEvent) -> bool:
         """
         检查群组权限
-        
+
         Args:
             event: 消息事件
-            
+
         Returns:
             bool: 是否有权限
         """
         # 如果白名单功能被禁用，则允许所有群聊使用
         if not self.config_manager.is_whitelist_enabled():
             return True
-            
+
         if event.get_message_type() == MessageType.GROUP_MESSAGE:
             if event.get_group_id() not in self.group_white_list:
                 logger.info("群聊不在白名单中:" + event.get_group_id())
                 return False
         return True
-    
-    async def send_response(self, event: AstrMessageEvent, text: str, image_url: Optional[str] = None):
+
+    async def send_response(
+        self, event: AstrMessageEvent, text: str, image_url: Optional[str] = None
+    ):
         """
         发送响应消息
-        
+
         Args:
             event: 消息事件
             text: 文本消息
