@@ -1,6 +1,6 @@
 # JOJO替身面板插件
 
-[![Version](https://img.shields.io/badge/version-v2.0.0-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
+[![Version](https://img.shields.io/badge/version-v2.0.1-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-green)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-orange)](./LICENSE)
 
@@ -150,6 +150,10 @@ astrbot_plugin_jojo_stand_panel/
 - **插件仓库**: [https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
 
 ## 📝 更新日志
+
+### v2.0.1
+
+- 数**数据持久化**: 改为插件数据文件夹存储
 
 ### v2.0.0
 

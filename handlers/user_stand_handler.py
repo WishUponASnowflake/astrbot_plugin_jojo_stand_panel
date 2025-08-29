@@ -2,6 +2,7 @@
 用户替身管理指令处理器
 """
 
+from typing import Optional, Tuple
 from astrbot.api.event import AstrMessageEvent
 import astrbot.api.message_components as Comp
 
@@ -123,16 +124,18 @@ class UserStandHandler(BaseStandHandler):
         async for result in self.send_response(event, response_text, image_url):
             yield result
 
-    async def handle_view_stand(self, event: AstrMessageEvent):
-        """处理查看他人替身指令"""
-        if not self.check_group_permission(event):
-            return
+    def _parse_target_user(
+        self, event: AstrMessageEvent
+    ) -> Tuple[Optional[str], Optional[str]]:
+        """
+        解析目标用户的逻辑
 
-        # 检查他的替身指令是否启用
-        if not self.config_manager.is_view_others_stand_enabled():
-            yield event.chain_result([Comp.Plain("❌ 他的替身指令已被管理员禁用！")])
-            return
+        Args:
+            event: 消息事件
 
+        Returns:
+            tuple[Optional[str], Optional[str]]: (用户ID, 用户名称)
+        """
         target_user_id = None
         target_user_name = None
 
@@ -159,7 +162,22 @@ class UserStandHandler(BaseStandHandler):
                     target_user_id = potential_user_id
                     target_user_name = f"用户{target_user_id}"
 
-        # 如果还是没有找到目标用户，显示帮助信息
+        return target_user_id, target_user_name
+
+    async def handle_view_stand(self, event: AstrMessageEvent):
+        """处理查看他人替身指令"""
+        if not self.check_group_permission(event):
+            return
+
+        # 检查他的替身指令是否启用
+        if not self.config_manager.is_view_others_stand_enabled():
+            yield event.chain_result([Comp.Plain("❌ 他的替身指令已被管理员禁用！")])
+            return
+
+        # 解析目标用户
+        target_user_id, target_user_name = self._parse_target_user(event)
+
+        # 如果没有找到目标用户，显示帮助信息
         if target_user_id is None:
             help_text = """查看替身使用方法：
 /他的替身 @用户

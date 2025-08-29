@@ -8,44 +8,29 @@ from astrbot.core.platform.message_type import MessageType
 from astrbot.api import logger
 import astrbot.api.message_components as Comp
 
-from ..services.stand_data_service import StandDataService
-from ..services.api_service import StandAPIService
-from ..utils.config_manager import ConfigManager
-from ..utils.cooldown_manager import CooldownManager
+from ..utils.service_container import ServiceContainer
 
 
 class BaseStandHandler:
     """替身指令处理器基类"""
 
-    def __init__(
-        self,
-        data_service: StandDataService,
-        api_service: StandAPIService,
-        cooldown_manager: CooldownManager,
-        group_white_list: list,
-        timezone,
-        stand_name_generator,
-        config_manager: ConfigManager,
-    ):
+    def __init__(self, service_container: ServiceContainer):
         """
         初始化处理器
 
         Args:
-            data_service: 数据服务
-            api_service: API服务
-            cooldown_manager: 冷却管理器
-            group_white_list: 群组白名单
-            timezone: 时区
-            stand_name_generator: 替身名字生成器
-            config_manager: 配置管理器
+            service_container: 服务容器
         """
-        self.data_service = data_service
-        self.api_service = api_service
-        self.cooldown_manager = cooldown_manager
-        self.group_white_list = group_white_list
-        self.timezone = timezone
-        self.stand_name_generator = stand_name_generator
-        self.config_manager = config_manager
+        self.service_container = service_container
+
+        # 从服务容器获取所有依赖
+        self.data_service = service_container.get_data_service()
+        self.api_service = service_container.get_api_service()
+        self.cooldown_manager = service_container.get_cooldown_manager()
+        self.group_white_list = service_container.get_group_white_list()
+        self.timezone = service_container.get_timezone()
+        self.stand_name_generator = service_container.get_stand_name_generator()
+        self.config_manager = service_container.get_config_manager()
 
     def check_group_permission(self, event: AstrMessageEvent) -> bool:
         """
@@ -78,7 +63,8 @@ class BaseStandHandler:
             text: 文本消息
             image_url: 图片URL（可选）
         """
-        chain = [Comp.Plain(text)]
+        chain = []
+        chain.append(Comp.Plain(text))
         if image_url:
             chain.append(Comp.Image.fromURL(image_url))
         yield event.chain_result(chain)
