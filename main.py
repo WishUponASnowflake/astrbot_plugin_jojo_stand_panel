@@ -25,10 +25,13 @@ class MyPlugin(Star):
 
         # 获取插件数据目录路径
         try:
-            data_dir_path = str(StarTools.get_data_dir())
-        except Exception:
-            # 如果获取失败，使用None，回退到sp存储
-            data_dir_path = None
+            data_dir_path = StarTools.get_data_dir()  # 保持Path对象
+        except (FileNotFoundError, PermissionError, OSError) as e:
+            logger.error(f"❌ 无法获取数据目录，插件无法正常工作：{e}")
+            raise
+        except Exception as e:
+            logger.error(f"❌ 获取数据目录时发生未预期错误：{e}")
+            raise
 
         self.service_container = ServiceContainer(self.config_manager, data_dir_path)
 
@@ -44,35 +47,8 @@ class MyPlugin(Star):
 
     async def initialize(self):
         """插件初始化方法"""
-        # 执行数据迁移
-        await self._perform_data_migration()
-
-    async def _perform_data_migration(self):
-        """执行数据迁移从 SP 到文件系统"""
-        try:
-            data_service = self.service_container.get_data_service()
-            migration_result = data_service.migrate_data_from_sp()
-
-            if migration_result["success"]:
-                # 记录迁移结果
-                if (
-                    migration_result["stands_migrated"] > 0
-                    or migration_result["awaken_records_migrated"] > 0
-                ):
-                    logger.info(
-                        f"📦 JOJO替身面板插件数据迁移完成："
-                        f"迁移了 {migration_result['stands_migrated']} 个替身数据和 "
-                        f"{migration_result['awaken_records_migrated']} 个觉醒记录"
-                    )
-                else:
-                    logger.info("📦 JOJO替身面板插件：没有发现需要迁移的数据")
-            else:
-                logger.warning(
-                    f"⚠️ JOJO替身面板插件数据迁移失败：{migration_result['message']}"
-                )
-
-        except Exception as e:
-            logger.error(f"❌ JOJO替身面板插件数据迁移出错：{str(e)}")
+        # 插件初始化完成
+        logger.info("🎆 JOJO替身面板插件初始化完成")
 
     # ==================== 指令注册 ====================
 

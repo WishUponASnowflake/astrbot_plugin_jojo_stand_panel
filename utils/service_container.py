@@ -2,7 +2,8 @@
 服务容器类，用于管理插件中的所有依赖项
 """
 
-from typing import Any, Optional
+from typing import Any, Union
+from pathlib import Path
 import pytz
 
 from ..services.stand_data_service import StandDataService
@@ -15,15 +16,13 @@ from .stand_name_generator import StandNameGenerator
 class ServiceContainer:
     """服务容器类，统一管理所有依赖项"""
 
-    def __init__(
-        self, config_manager: ConfigManager, data_dir_path: Optional[str] = None
-    ):
+    def __init__(self, config_manager: ConfigManager, data_dir_path: Union[str, Path]):
         """
         初始化服务容器
 
         Args:
             config_manager: 配置管理器
-            data_dir_path: 数据目录路径（可选）
+            data_dir_path: 数据目录路径（必需）
         """
         self.config_manager = config_manager
         self.data_dir_path = data_dir_path
