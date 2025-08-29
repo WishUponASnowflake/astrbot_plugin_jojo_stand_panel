@@ -19,12 +19,9 @@ class UITexts:
 - 包括随机的名字和能力值
 - 每人每天只能觉醒一次
 
-📝 示例：
-/觉醒替身
-
 ⚠️ 注意：每人每天只能觉醒一次"""
 
-    AWAKEN_STAND_EXISTS = "🌱 你已经有替身了！如需重新觉醒，请使用 /重新觉醒替身"
+    AWAKEN_STAND_EXISTS = "🌱 你已经有替身了！如需重新觉醒，请使用 /重新觉醒"
 
     AWAKEN_STAND_SUCCESS = """🌟 替身觉醒成功！
 
