@@ -1,14 +1,16 @@
 # JOJO替身面板插件
 
-[![Version](https://img.shields.io/badge/version-v2.0.1-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
+*本README文档由AI生成*
+
+[![Version](https://img.shields.io/badge/version-v2.1.0-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-green)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-orange)](./LICENSE)
 
-一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能。一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能一个用于AstrBot的JOJO替身面板生成插件，调用TripleYing的API生成JOJO风格替身面板图片。支持随机生成、自定义设置、替身系统等功能。
+一个功能丰富的AstrBot插件，调用TripleYing API生成JOJO风格替身面板图片。支持随机生成、自定义设置、觉醒系统、词库配置等完整功能。
 
 ## 📸 效果展示
 
-生成的具有JOJO风格的替身面板，包含替身名称、能力值雷达图元素：
+生成的具有JOJO风格的替身面板，包含替身名称、能力值的雷达图：
 
 ![替身面板示例](./example.png)
 
@@ -24,20 +26,23 @@
 
 ### ⚙️ 替身管理系统
 
-- **设置替身**: 自定义6个能力值和替身名称
+- **设置替身**: 自定义替身名称和6个能力值
 - **我的替身**: 查看个人设置的替身面板
 - **他的替身**: 通过@用户查看别人的替身
-- **持久化存储**: 替身系统数据持久化存储
+- **数据持久化**: 替身数据永久保存，支持文件+SP混合存储
 
 ### ⭐ 觉醒系统
 
 - **觉醒替身**: 随机生成专属替身（初次觉醒）
-- **重新觉醒**: 重新生成替身（可添加每日限制）
+- **重新觉醒**: 重新生成替身（可配置每日限制）
+- **次数统计**: 显示今日剩余觉醒次数
+- **智能提示**: 根据配置动态生成提示信息
 
-### 🎨 自定义配置
+### 🎨 高级配置
 
-- **可配置词库**: 支持自定义替身名称前缀和后缀
-- **群聊白名单**: 控制插件使用范围
+- **可配置词库**: 支持自定义替身名称前后缀（50个默认词汇）
+- **群聊白名单**: 精确控制插件使用范围
+- **功能开关**: 灵活控制各项功能的启用状态
 - **API服务器**: 可自定义API地址
 
 ## 📦 安装方法
@@ -63,15 +68,19 @@ git clone https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel.git
 | `enable_view_others_stand` | 布尔 | 启用他的替身指令                 | `true`                                 |
 | `enable_awaken_system`     | 布尔 | 启用觉醒系统                     | `true`                                 |
 | `daily_awaken_limit`       | 整数 | 每日觉醒次数限制（-1为不限次数） | `1`                                    |
-| `stand_name_prefixes`      | 列表 | 替身名称前缀词库                 | 预设30个词汇                             |
-| `stand_name_suffixes`      | 列表 | 替身名称后缀词库                 | 预设30个词汇                             |
+| `stand_name_prefixes`      | 文本 | 替身名称前缀词库（逗号分隔）     | 50个默认前缀词汇                         |
+| `stand_name_suffixes`      | 文本 | 替身名称后缀词库（逗号分隔）     | 50个默认后缀词汇                         |
 
 ### 替身名称词库自定义
 
-您可以在配置中自定义替身名称的前缀和后缀词库，让每个服务器都有独特的替身命名风格：
+在AstrBot WebUI中直接输入逗号分隔的字符串
 
-**前缀示例**: 白金、黄金、钻石、紫金、银色、光辉、烈焰、寒冰...
-**后缀示例**: 之星、使者、战士、守护、王者、骑士、法师、灵魂...
+```
+前缀: 白金,黄金,钻石,紫金,银色,光辉,烈焰,寒冰
+后缀: 之星,使者,战士,守护,王者,骑士,法师,灵魂
+```
+
+默认提供50个前后缀词汇，可组合出2500种不同的替身名称！
 
 ## 🎮 指令列表
 
@@ -108,9 +117,18 @@ git clone https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel.git
 - **D**: 低等级（2）
 - **E**: 最低等级（1）
 
+**6个能力值按顺序代表**：
+
+1. 破坏力
+2. 速度
+3. 射程距离
+4. 持续力
+5. 精密动作性
+6. 成长性
+
 **有效示例**:
 
-- `AAAAAA` - 全A替身
+- `AAAAAA` - 全A替身（破坏力:A 速度:A 射程距离:A 持续力:A 精密动作性:A 成长性:A）
 - `AABCDE` - 平衡型替身
 - `ABCDEE` - 特化型替身
 
@@ -120,20 +138,23 @@ git clone https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel.git
 astrbot_plugin_jojo_stand_panel/
 ├── main.py                      # 插件入口，指令注册
 ├── _conf_schema.json           # 配置文件模式
-├── metadata.yaml               # 插件元数据
-├── models/                     # 数据模型
+├── example.png                 # 替身面板示例图片
+├── README.md                   # 项目说明文档（AI生成）
+├── metadata.yaml               # 插件元数据和版本信息
+├── models/                     # 数据模型层
 │   ├── __init__.py
 │   └── stand_models.py         # 替身数据结构
 ├── services/                   # 业务逻辑层
 │   ├── __init__.py
 │   ├── stand_data_service.py   # 数据服务
 │   └── api_service.py          # API服务
-├── utils/                      # 工具类
+├── utils/                      # 工具类层
 │   ├── __init__.py
 │   ├── config_manager.py       # 配置管理器
-│   ├── ability_utils.py        # 能力值处理
-│   ├── stand_name_generator.py # 名称生成器
-│   └── cooldown_manager.py     # 冷却管理器
+│   ├── ability_display_utils.py # 能力值显示工具
+│   ├── stand_name_generator.py # 替身名称生成器
+│   ├── cooldown_manager.py     # 冷却时间管理器
+│   └── service_container.py    # 服务容器（依赖注入）
 └── handlers/                   # 指令处理器
     ├── __init__.py
     ├── base_handler.py         # 基础处理器
@@ -151,9 +172,18 @@ astrbot_plugin_jojo_stand_panel/
 
 ## 📝 更新日志
 
+### v2.1.0 (当前版本)
+
+- 🎨 **词库优化**: 默认前后缀词库扩展至50个，支持2500种名称组合
+- ⚙️ **配置优化**: 前后缀配置改为WebUI友好的字符串格式（逗号分隔）
+- 📊 **显示优化**: 能力值显示统一为"能力名称：能力值"格式
+- 📦 **提示美化**: 全面美化提示信息，添加统一图标系统
+- ⭐ **觉醒优化**: 动态觉醒次数提示，显示今日剩余次数
+- 🛠️ **代码优化**: 清理冗余代码，提高可维护性
+
 ### v2.0.1
 
-- 数**数据持久化**: 改为插件数据文件夹存储
+- 💾 **数据持久化**: 改为插件数据文件夹存储
 
 ### v2.0.0
 

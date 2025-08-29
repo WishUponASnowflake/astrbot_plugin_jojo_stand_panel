@@ -7,6 +7,7 @@ import astrbot.api.message_components as Comp
 
 from .base_handler import BaseStandHandler
 from ..utils.ability_utils import AbilityUtils
+from ..utils.ability_display_utils import AbilityDisplayUtils
 
 
 class CustomStandHandler(BaseStandHandler):
@@ -22,15 +23,15 @@ class CustomStandHandler(BaseStandHandler):
 
         if len(message_parts) < 2:
             # 显示帮助信息
-            help_text = """替身面板使用方法：
+            help_text = """📚 替身面板使用方法：
 /替身 <六个能力值> [名字]
 
-能力值格式：
+💡 能力值格式：
 - 使用A-E表示能力等级
 - 必须输入恰好6个能力值
 - 只支持直接连写格式，如：AAAAEE
 
-示例：
+📝 示例：
 /替身 AABCDE
 /替身 ABCDEE 我的替身
 /替身 AAAAAA 超级替身"""
@@ -68,14 +69,17 @@ class CustomStandHandler(BaseStandHandler):
             name=display_name, ability=ability_str
         )
 
+        # 格式化能力值显示
+        ability_letters = AbilityUtils.convert_abilities_to_letters(ability_str)
+        formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
+            ability_letters
+        )
+
         # 构建回复消息
-        ability_display = abilities_input.upper()
         if custom_name:
-            response_text = (
-                f"✨ 为 {custom_name} 创建的替身面板（能力：{ability_display}）："
-            )
+            response_text = f"✨ 为 {custom_name} 创建的替身面板：\n\n能力值：\n{formatted_abilities}"
         else:
-            response_text = f"✨ 你创建的替身面板（能力：{ability_display}）："
+            response_text = f"✨ 你创建的替身面板：\n\n能力值：\n{formatted_abilities}"
 
         async for result in self.send_response(event, response_text, image_url):
             yield result

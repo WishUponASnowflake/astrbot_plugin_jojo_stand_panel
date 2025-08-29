@@ -41,6 +41,26 @@ class ConfigManager:
         "虹彩",
         "幻影",
         "永恒",
+        "血色",
+        "翡翠",
+        "琥珀",
+        "玛瑙",
+        "珊瑚",
+        "蓝宝石",
+        "红宝石",
+        "祖母绿",
+        "猫眼石",
+        "紫水晶",
+        "青铜",
+        "赤铜",
+        "纯白",
+        "漆黑",
+        "暗红",
+        "深蓝",
+        "墨绿",
+        "金辉",
+        "银辉",
+        "炽热",
     ]
 
     # 默认后缀词库
@@ -75,6 +95,26 @@ class ConfigManager:
         "波涛",
         "山岳",
         "天使",
+        "恶魔",
+        "精灵",
+        "血统",
+        "耳语",
+        "誓言",
+        "契约",
+        "追缉",
+        "羁绊",
+        "复仇",
+        "复活",
+        "逆袭",
+        "逆转",
+        "启示",
+        "预言",
+        "天命",
+        "审判日",
+        "未来",
+        "轮回",
+        "残影",
+        "遗迹",
     ]
 
     def __init__(self, config: AstrBotConfig):
@@ -89,32 +129,68 @@ class ConfigManager:
     def get_stand_name_prefixes(self) -> List[str]:
         """
         获取替身名称前缀词库
+        支持从字符串配置中解析逗号分隔的前缀
 
         Returns:
             List[str]: 前缀词库列表
         """
-        prefixes = self.config.get("stand_name_prefixes", self.DEFAULT_PREFIXES)
+        prefixes_config = self.config.get("stand_name_prefixes", None)
 
-        # 确保返回的是列表且不为空
-        if not isinstance(prefixes, list) or len(prefixes) == 0:
+        # 如果是字符串配置，解析逗号分隔的值
+        if isinstance(prefixes_config, str):
+            if prefixes_config.strip():
+                # 按逗号分隔，并去除空格
+                prefixes = [
+                    prefix.strip()
+                    for prefix in prefixes_config.split(",")
+                    if prefix.strip()
+                ]
+                if prefixes:
+                    return prefixes
+            # 如果是空字符串或解析后为空，使用默认值
             return self.DEFAULT_PREFIXES
 
-        return prefixes
+        # 如果是列表配置（兼容旧版本）
+        elif isinstance(prefixes_config, list):
+            if len(prefixes_config) > 0:
+                return prefixes_config
+            return self.DEFAULT_PREFIXES
+
+        # 其他情况使用默认值
+        return self.DEFAULT_PREFIXES
 
     def get_stand_name_suffixes(self) -> List[str]:
         """
         获取替身名称后缀词库
+        支持从字符串配置中解析逗号分隔的后缀
 
         Returns:
             List[str]: 后缀词库列表
         """
-        suffixes = self.config.get("stand_name_suffixes", self.DEFAULT_SUFFIXES)
+        suffixes_config = self.config.get("stand_name_suffixes", None)
 
-        # 确保返回的是列表且不为空
-        if not isinstance(suffixes, list) or len(suffixes) == 0:
+        # 如果是字符串配置，解析逗号分隔的值
+        if isinstance(suffixes_config, str):
+            if suffixes_config.strip():
+                # 按逗号分隔，并去除空格
+                suffixes = [
+                    suffix.strip()
+                    for suffix in suffixes_config.split(",")
+                    if suffix.strip()
+                ]
+                if suffixes:
+                    return suffixes
+            # 如果是空字符串或解析后为空，使用默认值
             return self.DEFAULT_SUFFIXES
 
-        return suffixes
+        # 如果是列表配置（兼容旧版本）
+        elif isinstance(suffixes_config, list):
+            if len(suffixes_config) > 0:
+                return suffixes_config
+            return self.DEFAULT_SUFFIXES
+
+        # 其他情况使用默认值
+        return self.DEFAULT_SUFFIXES
 
     def get_api_server(self) -> str:
         """

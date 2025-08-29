@@ -8,6 +8,8 @@ from astrbot.api.event import AstrMessageEvent
 import astrbot.api.message_components as Comp
 
 from .base_handler import BaseStandHandler
+from ..utils.ability_utils import AbilityUtils
+from ..utils.ability_display_utils import AbilityDisplayUtils
 
 
 class RandomStandHandler(BaseStandHandler):
@@ -23,10 +25,22 @@ class RandomStandHandler(BaseStandHandler):
 
         if can_use:
             user_name = event.get_sender_name()
-            image_url = self.api_service.get_image_url(name=user_name)
-            async for result in self.send_response(
-                event, "你抽到的替身面板是：", image_url
-            ):
+
+            # 生成随机能力值
+            ability_str = AbilityUtils.generate_random_abilities()
+            ability_letters = AbilityUtils.convert_abilities_to_letters(ability_str)
+            formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
+                ability_letters
+            )
+
+            image_url = self.api_service.get_image_url(
+                name=user_name, ability=ability_str
+            )
+            response_text = (
+                f"🎲 你抽到的随机替身面板：\n\n能力值：\n{formatted_abilities}"
+            )
+
+            async for result in self.send_response(event, response_text, image_url):
                 yield result
         else:
             cooldown_message = self.cooldown_manager.format_cooldown_message(
@@ -49,9 +63,15 @@ class RandomStandHandler(BaseStandHandler):
         for i in range(6):
             ability_arr.append(str(person_random.randint(1, 5)))
         ability_str = ",".join(ability_arr)
-        image_url = self.api_service.get_image_url(name=user_name, ability=ability_str)
 
-        async for result in self.send_response(
-            event, "你抽到的替身面板是：", image_url
-        ):
+        # 格式化能力值显示
+        ability_letters = AbilityUtils.convert_abilities_to_letters(ability_str)
+        formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
+            ability_letters
+        )
+
+        image_url = self.api_service.get_image_url(name=user_name, ability=ability_str)
+        response_text = f"📅 你今日的替身面板：\n\n能力值：\n{formatted_abilities}"
+
+        async for result in self.send_response(event, response_text, image_url):
             yield result

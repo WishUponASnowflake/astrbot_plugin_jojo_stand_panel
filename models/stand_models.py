@@ -14,6 +14,9 @@ class StandData:
     abilities: str  # 能力值字符串，如 "5,4,3,2,1,5"
     name: Optional[str] = None  # 替身名字
     created_at: Optional[str] = None  # 创建时间
+    acquisition_method: Optional[str] = (
+        None  # 获得方式："manual"(设置替身)、"awaken"(觉醒系统)、"unknown"(未知)
+    )
 
     def to_dict(self) -> dict:
         """转换为字典格式"""
@@ -21,6 +24,7 @@ class StandData:
             "abilities": self.abilities,
             "name": self.name,
             "created_at": self.created_at,
+            "acquisition_method": self.acquisition_method,
         }
 
     @classmethod
@@ -31,6 +35,9 @@ class StandData:
             abilities=data.get("abilities", ""),
             name=data.get("name"),
             created_at=data.get("created_at"),
+            acquisition_method=data.get(
+                "acquisition_method", "unknown"
+            ),  # 旧数据默认为未知
         )
 
 

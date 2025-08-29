@@ -59,6 +59,6 @@ class CooldownManager:
         seconds = remaining_seconds % 60
 
         if minutes > 0:
-            return f"随机替身命令冷却中，还需等待 {minutes} 分 {seconds} 秒后才能再次使用，如需频繁使用请进入官网: http://tripleying.com/jojo"
+            return f"⏳ 随机替身命令冷却中，还需等待 {minutes} 分 {seconds} 秒后才能再次使用，如需频繁使用请进入官网: http://tripleying.com/jojo"
         else:
-            return f"随机替身命令冷却中，还需等待 {seconds} 秒后才能再次使用，如需频繁使用请进入官网: http://tripleying.com/jojo"
+            return f"⏳ 随机替身命令冷却中，还需等待 {seconds} 秒后才能再次使用，如需频繁使用请进入官网: http://tripleying.com/jojo"

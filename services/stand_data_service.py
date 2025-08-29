@@ -74,7 +74,11 @@ class StandDataService:
             return os.path.join(self.data_dir_path, "awaken_records", f"{today}.json")
 
     def save_user_stand(
-        self, user_id: str, abilities: str, name: Optional[str] = None
+        self,
+        user_id: str,
+        abilities: str,
+        name: Optional[str] = None,
+        acquisition_method: str = "unknown",
     ) -> None:
         """
         保存用户的替身数据到持久化存储
@@ -83,6 +87,7 @@ class StandDataService:
             user_id: 用户ID
             abilities: 能力值字符串，如 "5,5,4,3,2,1"
             name: 替身名字（可选）
+            acquisition_method: 获得方式："manual"(手动设置)、"awaken"(觉醒系统)、"unknown"(未知)
         """
         # 创建替身数据对象
         stand_data = StandData(
@@ -92,6 +97,7 @@ class StandDataService:
             created_at=datetime.datetime.now(self.timezone).strftime(
                 "%Y-%m-%d %H:%M:%S"
             ),
+            acquisition_method=acquisition_method,
         )
 
         # 如果有数据目录，使用文件存储；否则使用sp存储
@@ -321,6 +327,54 @@ class StandDataService:
         from astrbot.api import sp
 
         return sp.get(self.AWAKEN_RECORDS_KEY, {})
+
+    def get_today_awaken_count(self, user_id: str) -> int:
+        """
+        获取用户今日已使用的觉醒次数
+
+        Args:
+            user_id: 用户ID
+
+        Returns:
+            int: 今日已使用的觉醒次数
+        """
+        today = datetime.datetime.now(self.timezone).strftime("%Y-%m-%d")
+
+        # 先尝试从用户专属文件读取
+        if self.data_dir_path:
+            file_path = self._get_awaken_records_file(user_id)
+            if file_path and os.path.exists(file_path):
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        user_awaken_records = json.load(f)
+                    today_record = user_awaken_records.get(today, {})
+                    return today_record.get("count", 0)
+                except Exception:
+                    pass
+
+        # 备选方案：从旧数据格式或sp获取
+        awaken_records = {}
+
+        # 先尝试从旧的按月份文件读取
+        if self.data_dir_path:
+            old_file_path = self._get_awaken_records_file()  # 不传user_id，获取旧格式
+            if old_file_path and os.path.exists(old_file_path):
+                try:
+                    with open(old_file_path, "r", encoding="utf-8") as f:
+                        awaken_records = json.load(f)
+                except Exception:
+                    pass
+
+        # 如果还是没有数据，使用sp
+        if not awaken_records:
+            awaken_records = self._get_awaken_records_sp()
+
+        if user_id not in awaken_records:
+            return 0
+
+        user_records = awaken_records[user_id]
+        today_record = user_records.get(today, {})
+        return today_record.get("count", 0)
 
     # ==================== 数据迁移相关方法 ====================
 
