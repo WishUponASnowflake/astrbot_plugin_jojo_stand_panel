@@ -1,4 +1,6 @@
 """
+本文档由AI生成
+
 用户替身管理指令处理器
 """
 
@@ -10,6 +12,7 @@ from .base_handler import BaseStandHandler
 from ..utils.ability_utils import AbilityUtils
 from ..utils.ability_display_utils import AbilityDisplayUtils
 from ..utils.acquisition_method_utils import AcquisitionMethodUtils
+from ..resources import UITexts
 
 
 class UserStandHandler(BaseStandHandler):
@@ -22,7 +25,7 @@ class UserStandHandler(BaseStandHandler):
 
         # 检查设置替身指令是否启用
         if not self.config_manager.is_set_stand_enabled():
-            yield event.chain_result([Comp.Plain("❌ 设置替身指令已被管理员禁用！")])
+            yield event.chain_result([Comp.Plain(UITexts.SET_STAND_DISABLED)])
             return
 
         # 解析命令参数
@@ -30,22 +33,7 @@ class UserStandHandler(BaseStandHandler):
 
         if len(message_parts) < 2:
             # 显示帮助信息
-            help_text = """📚 设置替身使用方法：
-/设置替身 <六个能力值> [替身名字]
-
-💡 能力值格式：
-- 使用A-E表示能力等级
-- 必须输入恰好6个能力值
-- 只支持直接连写格式，如：AAAAEE
-
-📝 示例：
-/设置替身 AABCDE
-/设置替身 ABCDEE 白金之星
-/设置替身 AAAAAA 钻石之星
-
-👁️ 设置后可以使用 /我的替身 来查看你的替身面板"""
-
-            yield event.chain_result([Comp.Plain(help_text)])
+            yield event.chain_result([Comp.Plain(UITexts.SET_STAND_HELP)])
             return
 
         abilities_input = message_parts[1]
@@ -55,16 +43,7 @@ class UserStandHandler(BaseStandHandler):
         ability_str = AbilityUtils.parse_abilities(abilities_input)
 
         if ability_str is None:
-            error_text = """❌ 能力值格式错误！
-
-请输入恰好6个能力值（A-E），例如：
-✅ AABCDE
-✅ ABCDEE
-✅ AAAAAA
-
-当前输入无法识别为有效的6个能力值。"""
-
-            yield event.chain_result([Comp.Plain(error_text)])
+            yield event.chain_result([Comp.Plain(UITexts.SET_STAND_INVALID_ABILITIES)])
             return
 
         # 保存用户替身数据
@@ -74,9 +53,13 @@ class UserStandHandler(BaseStandHandler):
         # 构建确认消息
         ability_display = abilities_input.upper()
         if custom_name:
-            success_text = f"✅ 替身设置成功！\n替身名字：{custom_name}\n能力值：{ability_display}\n\n使用 /我的替身 查看面板图片"
+            success_text = UITexts.SET_STAND_SUCCESS_WITH_NAME.format(
+                stand_name=custom_name, abilities=ability_display
+            )
         else:
-            success_text = f"✅ 替身设置成功！\n能力值：{ability_display}\n\n使用 /我的替身 查看面板图片"
+            success_text = UITexts.SET_STAND_SUCCESS_WITHOUT_NAME.format(
+                abilities=ability_display
+            )
 
         yield event.chain_result([Comp.Plain(success_text)])
 
@@ -93,13 +76,7 @@ class UserStandHandler(BaseStandHandler):
 
         if stand_data is None:
             # 用户还没有设置替身
-            no_stand_text = """❌ 你还没有设置替身！
-
-🔄 发送 /觉醒替身 来随机生成你的替身
-🔧 发送 /设置替身 <能力值> [名字] 来设置你的专属替身
-📝 例如：/设置替身 AABCDE 白金之星"""
-
-            yield event.chain_result([Comp.Plain(no_stand_text)])
+            yield event.chain_result([Comp.Plain(UITexts.MY_STAND_NO_STAND)])
             return
 
         # 确定显示名字
@@ -130,9 +107,18 @@ class UserStandHandler(BaseStandHandler):
 
         # 构建回复消息
         if stand_data.name:
-            response_text = f"🌟 你的替身：{stand_data.name}\n\n能力值：\n{formatted_abilities}\n\n获得方式：{acquisition_display}\n设置时间：{stand_data.created_at}"
+            response_text = UITexts.MY_STAND_WITH_NAME.format(
+                stand_name=stand_data.name,
+                abilities=formatted_abilities,
+                acquisition_method=acquisition_display,
+                created_at=stand_data.created_at,
+            )
         else:
-            response_text = f"🌟 你的替身面板\n\n能力值：\n{formatted_abilities}\n\n获得方式：{acquisition_display}\n设置时间：{stand_data.created_at}"
+            response_text = UITexts.MY_STAND_WITHOUT_NAME.format(
+                abilities=formatted_abilities,
+                acquisition_method=acquisition_display,
+                created_at=stand_data.created_at,
+            )
 
         async for result in self.send_response(event, response_text, image_url):
             yield result
@@ -184,7 +170,7 @@ class UserStandHandler(BaseStandHandler):
 
         # 检查他的替身指令是否启用
         if not self.config_manager.is_view_others_stand_enabled():
-            yield event.chain_result([Comp.Plain("❌ 他的替身指令已被管理员禁用！")])
+            yield event.chain_result([Comp.Plain(UITexts.VIEW_STAND_DISABLED)])
             return
 
         # 解析目标用户
@@ -192,18 +178,7 @@ class UserStandHandler(BaseStandHandler):
 
         # 如果没有找到目标用户，显示帮助信息
         if target_user_id is None:
-            help_text = """📚 查看替身使用方法：
-/他的替身 @用户
-或
-/他的替身 <用户ID>
-
-📝 示例：
-- 在群聊中@某人：/他的替身 @张三
-- 直接输入用户ID：/他的替身 123456789
-
-⚠️ 注意：只能查看已设置替身的用户"""
-
-            yield event.chain_result([Comp.Plain(help_text)])
+            yield event.chain_result([Comp.Plain(UITexts.VIEW_STAND_HELP)])
             return
 
         # 获取目标用户的替身数据
@@ -211,7 +186,9 @@ class UserStandHandler(BaseStandHandler):
 
         if stand_data is None:
             # 目标用户还没有设置替身
-            no_stand_text = f"❌ {target_user_name} 还没有设置替身！\n\n💡 用户可以使用 /设置替身 <能力值> [名字] 来设置专属替身"
+            no_stand_text = UITexts.VIEW_STAND_NO_STAND.format(
+                user_name=target_user_name
+            )
             yield event.chain_result([Comp.Plain(no_stand_text)])
             return
 
@@ -243,9 +220,20 @@ class UserStandHandler(BaseStandHandler):
 
         # 构建回复消息
         if stand_data.name:
-            response_text = f"🔍 {target_user_name} 的替身：{stand_data.name}\n\n能力值：\n{formatted_abilities}\n\n获得方式：{acquisition_display}\n设置时间：{stand_data.created_at}"
+            response_text = UITexts.VIEW_STAND_WITH_NAME.format(
+                user_name=target_user_name,
+                stand_name=stand_data.name,
+                abilities=formatted_abilities,
+                acquisition_method=acquisition_display,
+                created_at=stand_data.created_at,
+            )
         else:
-            response_text = f"🔍 {target_user_name} 的替身面板\n\n能力值：\n{formatted_abilities}\n\n获得方式：{acquisition_display}\n设置时间：{stand_data.created_at}"
+            response_text = UITexts.VIEW_STAND_WITHOUT_NAME.format(
+                user_name=target_user_name,
+                abilities=formatted_abilities,
+                acquisition_method=acquisition_display,
+                created_at=stand_data.created_at,
+            )
 
         async for result in self.send_response(event, response_text, image_url):
             yield result

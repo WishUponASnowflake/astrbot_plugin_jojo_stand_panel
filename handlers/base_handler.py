@@ -1,12 +1,16 @@
 """
-替身指令处理器基类
+本文档由AI生成
+
+基础指令处理器，提供通用的指令处理逻辑
 """
 
 from typing import Optional
 from astrbot.api.event import AstrMessageEvent
-from astrbot.core.platform.message_type import MessageType
+from astrbot.api.platform import MessageType
 from astrbot.api import logger
 import astrbot.api.message_components as Comp
+
+from ..resources import UITexts
 
 from ..utils.service_container import ServiceContainer
 
@@ -48,7 +52,9 @@ class BaseStandHandler:
 
         if event.get_message_type() == MessageType.GROUP_MESSAGE:
             if event.get_group_id() not in self.group_white_list:
-                logger.info("群聊不在白名单中:" + event.get_group_id())
+                logger.info(
+                    UITexts.GROUP_NOT_IN_WHITELIST.format(group_id=event.get_group_id())
+                )
                 return False
         return True
 

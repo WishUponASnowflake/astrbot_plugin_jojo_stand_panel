@@ -1,15 +1,18 @@
 """
+本文档由AI生成
+
 随机替身指令处理器
 """
 
-import random
 import datetime
+import random
 from astrbot.api.event import AstrMessageEvent
 import astrbot.api.message_components as Comp
 
 from .base_handler import BaseStandHandler
 from ..utils.ability_utils import AbilityUtils
 from ..utils.ability_display_utils import AbilityDisplayUtils
+from ..resources import UITexts
 
 
 class RandomStandHandler(BaseStandHandler):
@@ -21,32 +24,40 @@ class RandomStandHandler(BaseStandHandler):
             return
 
         user_id = event.get_sender_id()
-        can_use, remaining_cooldown = self.cooldown_manager.check_cooldown(user_id)
+        user_name = event.get_sender_name()
 
-        if can_use:
-            user_name = event.get_sender_name()
-
-            # 生成随机能力值
-            ability_str = AbilityUtils.generate_random_abilities()
-            ability_letters = AbilityUtils.convert_abilities_to_letters(ability_str)
-            formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
-                ability_letters
-            )
-
-            image_url = self.api_service.get_image_url(
-                name=user_name, ability=ability_str
-            )
-            response_text = (
-                f"🎲 你抽到的随机替身面板：\n\n能力值：\n{formatted_abilities}"
-            )
-
-            async for result in self.send_response(event, response_text, image_url):
-                yield result
-        else:
-            cooldown_message = self.cooldown_manager.format_cooldown_message(
-                remaining_cooldown
+        # 检查冷却时间
+        can_proceed, remaining_cooldown = self.cooldown_manager.check_cooldown(user_id)
+        if not can_proceed:
+            cooldown_message = UITexts.RANDOM_STAND_COOLDOWN.format(
+                cooldown_info=self.cooldown_manager.format_cooldown_message(
+                    remaining_cooldown
+                )
             )
             yield event.chain_result([Comp.Plain(cooldown_message)])
+            return
+
+        # 生成随机能力值
+        ability_arr = []
+        for _ in range(6):
+            ability_arr.append(str(random.randint(1, 5)))
+        ability_str = ",".join(ability_arr)
+
+        # 生成图片
+        image_url = self.api_service.get_image_url(name=user_name, ability=ability_str)
+
+        # 格式化能力值显示
+        ability_letters = AbilityUtils.convert_abilities_to_letters(ability_str)
+        formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
+            ability_letters
+        )
+
+        response_text = UITexts.RANDOM_STAND_RESULT.format(
+            abilities=formatted_abilities
+        )
+
+        async for result in self.send_response(event, response_text, image_url):
+            yield result
 
     async def handle_today_stand(self, event: AstrMessageEvent):
         """处理今日替身指令"""
@@ -60,7 +71,7 @@ class RandomStandHandler(BaseStandHandler):
         seed = f"{user_id}{current_date}"
         person_random = random.Random(seed)
 
-        for i in range(6):
+        for _ in range(6):
             ability_arr.append(str(person_random.randint(1, 5)))
         ability_str = ",".join(ability_arr)
 
@@ -71,7 +82,7 @@ class RandomStandHandler(BaseStandHandler):
         )
 
         image_url = self.api_service.get_image_url(name=user_name, ability=ability_str)
-        response_text = f"📅 你今日的替身面板：\n\n能力值：\n{formatted_abilities}"
+        response_text = UITexts.TODAY_STAND_RESULT.format(abilities=formatted_abilities)
 
         async for result in self.send_response(event, response_text, image_url):
             yield result
