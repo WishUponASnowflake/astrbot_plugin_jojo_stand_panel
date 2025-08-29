@@ -101,3 +101,15 @@ Thumbs.db
 *.tmp
 *.temp
 *.bak
+
+# AstrBot
+HEAD
+config
+description
+hooks/
+index
+info/
+logs/
+objects/
+packed-refs
+refs/
