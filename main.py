@@ -31,6 +31,8 @@ class MyPlugin(Star):
             raise
         except Exception as e:
             logger.error(f"❌ 获取数据目录时发生未预期错误：{e}")
+            # 记录详细的异常信息以便调试
+            logger.exception("详细异常信息：")
             raise
 
         self.service_container = ServiceContainer(self.config_manager, data_dir_path)

@@ -1,6 +1,4 @@
 """
-本文档由AI生成
-
 自定义替身指令处理器
 """
 
@@ -26,20 +24,7 @@ class CustomStandHandler(BaseStandHandler):
 
         if len(message_parts) < 2:
             # 显示帮助信息
-            help_text = """📚 替身面板使用方法：
-/替身 <六个能力值> [名字]
-
-💡 能力值格式：
-- 使用A-E表示能力等级
-- 必须输入恰好6个能力值
-- 只支持直接连写格式，如：AAAAEE
-
-📝 示例：
-/替身 AABCDE
-/替身 ABCDEE 我的替身
-/替身 AAAAAA 超级替身"""
-
-            yield event.chain_result([Comp.Plain(help_text)])
+            yield event.chain_result([Comp.Plain(UITexts.CREATE_STAND_HELP)])
             return
 
         abilities_input = message_parts[1]
@@ -49,16 +34,9 @@ class CustomStandHandler(BaseStandHandler):
         ability_str = AbilityUtils.parse_abilities(abilities_input)
 
         if ability_str is None:
-            error_text = """❌ 能力值格式错误！
-
-请输入恰好6个能力值（A-E），例如：
-✅ AABCDE
-✅ ABCDEE
-✅ AAAAAA
-
-当前输入无法识别为有效的6个能力值。"""
-
-            yield event.chain_result([Comp.Plain(error_text)])
+            yield event.chain_result(
+                [Comp.Plain(UITexts.CREATE_STAND_INVALID_ABILITIES)]
+            )
             return
 
         # 如果没有提供自定义名字，使用用户昵称
@@ -80,9 +58,13 @@ class CustomStandHandler(BaseStandHandler):
 
         # 构建回复消息
         if custom_name:
-            response_text = f"✨ 为 {custom_name} 创建的替身面板：\n\n能力值：\n{formatted_abilities}"
+            response_text = UITexts.CREATE_STAND_SUCCESS_WITH_NAME.format(
+                stand_name=custom_name, abilities=formatted_abilities
+            )
         else:
-            response_text = f"✨ 你创建的替身面板：\n\n能力值：\n{formatted_abilities}"
+            response_text = UITexts.CREATE_STAND_SUCCESS_WITHOUT_NAME.format(
+                abilities=formatted_abilities
+            )
 
         async for result in self.send_response(event, response_text, image_url):
             yield result

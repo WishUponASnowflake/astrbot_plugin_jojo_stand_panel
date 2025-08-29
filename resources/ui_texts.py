@@ -1,6 +1,4 @@
 """
-本文档由AI生成
-
 UI文本资源文件，用于存储所有用户界面文本，实现代码与文本的分离
 """
 
@@ -19,9 +17,12 @@ class UITexts:
 - 包括随机的名字和能力值
 - 每人每天只能觉醒一次
 
+📝 示例：
+/觉醒替身
+
 ⚠️ 注意：每人每天只能觉醒一次"""
 
-    AWAKEN_STAND_EXISTS = "🌱 你已经有替身了！如需重新觉醒，请使用 /重新觉醒"
+    AWAKEN_STAND_EXISTS = "🌱 你已经有替身了！如需重新觉醒，请使用 /重新觉醒替身"
 
     AWAKEN_STAND_SUCCESS = """🌟 替身觉醒成功！
 
@@ -84,6 +85,34 @@ class UITexts:
         "✅ 替身设置成功！\n能力值：{abilities}\n\n使用 /我的替身 查看面板图片"
     )
 
+    CREATE_STAND_HELP = """📚 替身面板使用方法：
+/替身 <六个能力值> [名字]
+
+💡 能力值格式：
+- 使用A-E表示能力等级
+- 必须输入恰好6个能力值
+- 只支持直接连写格式，如：AAAAEE
+
+📝 示例：
+/替身 AABCDE
+/替身 ABCDEE 我的替身
+/替身 AAAAAA 超级替身"""
+
+    CREATE_STAND_INVALID_ABILITIES = """❌ 能力值格式错误！
+
+请输入恰好6个能力值（A-E），例如：
+✅ AABCDE
+✅ ABCDEE
+✅ AAAAAA
+
+当前输入无法识别为有效的6个能力值。"""
+
+    CREATE_STAND_SUCCESS_WITH_NAME = (
+        "✨ 为 {stand_name} 创建的替身面板：\n\n能力值：\n{abilities}"
+    )
+
+    CREATE_STAND_SUCCESS_WITHOUT_NAME = "✨ 你创建的替身面板：\n\n能力值：\n{abilities}"
+
     # 随机替身处理器相关文本
     RANDOM_STAND_COOLDOWN = (
         "❌ 随机替身功能冷却中！\n\n{cooldown_info}\n\n⏰ 冷却时间结束后可再次使用"
@@ -94,10 +123,10 @@ class UITexts:
     TODAY_STAND_RESULT = "📅 你今日的替身面板：\n\n能力值：\n{abilities}"
 
     # 用户替身处理器相关文本
-    MY_STAND_NO_STAND = """❌ 你还没有替身！
+    MY_STAND_NO_STAND = """❌ 你还没有设置替身！
 
 🔄 发送 /觉醒替身 来随机生成你的替身
-🔧 发送 /设置替身 <能力值> [名字] 来设置自定义替身
+🔧 发送 /设置替身 <能力值> [名字] 来设置你的专属替身
 📝 例如：/设置替身 AABCDE 白金之星"""
 
     MY_STAND_WITH_NAME = """🌟 你的替身：{stand_name}

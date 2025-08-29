@@ -1,6 +1,4 @@
 """
-本文档由AI生成
-
 随机替身指令处理器
 """
 
@@ -38,10 +36,7 @@ class RandomStandHandler(BaseStandHandler):
             return
 
         # 生成随机能力值
-        ability_arr = []
-        for _ in range(6):
-            ability_arr.append(str(random.randint(1, 5)))
-        ability_str = ",".join(ability_arr)
+        ability_str = AbilityUtils.generate_random_abilities()
 
         # 生成图片
         image_url = self.api_service.get_image_url(name=user_name, ability=ability_str)
@@ -66,11 +61,12 @@ class RandomStandHandler(BaseStandHandler):
 
         user_id = event.get_sender_id()
         user_name = event.get_sender_name()
-        ability_arr = []
         current_date = datetime.datetime.now(self.timezone).strftime("%Y%m%d")
         seed = f"{user_id}{current_date}"
         person_random = random.Random(seed)
 
+        # 生成基于种子的随机能力值
+        ability_arr = []
         for _ in range(6):
             ability_arr.append(str(person_random.randint(1, 5)))
         ability_str = ",".join(ability_arr)

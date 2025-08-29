@@ -1,6 +1,4 @@
 """
-本文档由AI生成
-
 觉醒替身指令处理器
 """
 
@@ -36,53 +34,8 @@ class AwakenStandHandler(BaseStandHandler):
             yield event.chain_result([Comp.Plain(UITexts.AWAKEN_STAND_EXISTS)])
             return
 
-        # 检查觉醒次数限制（使用配置的限制次数）
-        daily_limit = self.config_manager.get_daily_awaken_limit()
-        can_awaken, limit_message = self.data_service.check_awaken_limit(
-            user_id, daily_limit
-        )
-        if not can_awaken:
-            yield event.chain_result([Comp.Plain(limit_message)])
-            return
-
-        # 生成随机能力值和名字
-        random_abilities = AbilityUtils.generate_random_abilities()
-        random_name = self.stand_name_generator.generate_random_stand_name()
-
-        # 保存替身数据
-        self.data_service.save_user_stand(
-            user_id, random_abilities, random_name, "awaken"
-        )
-
-        # 记录觉醒次数
-        self.data_service.save_awaken_record(user_id)
-
-        # 生成替身面板URL
-        image_url = self.api_service.get_image_url(
-            name=random_name, ability=random_abilities
-        )
-
-        # 格式化能力值显示
-        ability_letters = AbilityUtils.convert_abilities_to_letters(random_abilities)
-        formatted_abilities = AbilityDisplayUtils.format_abilities_compact(
-            ability_letters
-        )
-
-        # 根据配置生成觉醒次数提示
-        current_awaken_count = self.data_service.get_today_awaken_count(user_id)
-        limit_hint = self._get_awaken_limit_hint(daily_limit, current_awaken_count)
-
-        # 构建回复消息
-        stand_info = f"🌟 替身名：{random_name}\n\n能力值：\n{formatted_abilities}"
-        response_text = UITexts.AWAKEN_STAND_SUCCESS.format(
-            stand_info=stand_info,
-            awaken_time=datetime.datetime.now(self.timezone).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
-            limit_hint=limit_hint,
-        )
-
-        async for result in self.send_response(event, response_text, image_url):
+        # 执行觉醒操作
+        async for result in self._perform_awaken(event, user_id, is_reawaken=False):
             yield result
 
     async def handle_reawaken_stand(self, event: AstrMessageEvent):
@@ -104,6 +57,21 @@ class AwakenStandHandler(BaseStandHandler):
             yield event.chain_result([Comp.Plain(UITexts.REAWAKEN_STAND_NO_EXISTING)])
             return
 
+        # 执行觉醒操作
+        async for result in self._perform_awaken(event, user_id, is_reawaken=True):
+            yield result
+
+    async def _perform_awaken(
+        self, event: AstrMessageEvent, user_id: str, is_reawaken: bool = False
+    ):
+        """
+        执行觉醒操作的公共逻辑
+
+        Args:
+            event: 消息事件
+            user_id: 用户ID
+            is_reawaken: 是否为重新觉醒
+        """
         # 检查觉醒次数限制（使用配置的限制次数）
         daily_limit = self.config_manager.get_daily_awaken_limit()
         can_awaken, limit_message = self.data_service.check_awaken_limit(
@@ -141,14 +109,24 @@ class AwakenStandHandler(BaseStandHandler):
         current_awaken_count = self.data_service.get_today_awaken_count(user_id)
         limit_hint = self._get_awaken_limit_hint(daily_limit, current_awaken_count)
 
-        response_text = UITexts.REAWAKEN_STAND_SUCCESS.format(
-            stand_name=random_name,
-            abilities=formatted_abilities,
-            awaken_time=datetime.datetime.now(self.timezone).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
-            limit_hint=limit_hint,
-        )
+        if is_reawaken:
+            response_text = UITexts.REAWAKEN_STAND_SUCCESS.format(
+                stand_name=random_name,
+                abilities=formatted_abilities,
+                awaken_time=datetime.datetime.now(self.timezone).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),
+                limit_hint=limit_hint,
+            )
+        else:
+            stand_info = f"🌟 替身名：{random_name}\n\n能力值：\n{formatted_abilities}"
+            response_text = UITexts.AWAKEN_STAND_SUCCESS.format(
+                stand_info=stand_info,
+                awaken_time=datetime.datetime.now(self.timezone).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),
+                limit_hint=limit_hint,
+            )
 
         async for result in self.send_response(event, response_text, image_url):
             yield result

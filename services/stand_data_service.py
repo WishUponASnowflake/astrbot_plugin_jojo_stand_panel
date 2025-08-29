@@ -189,8 +189,8 @@ class StandDataService:
                     user_awaken_records = json.load(f)
             except (IOError, PermissionError, OSError, json.JSONDecodeError) as e:
                 logger.error(f"❌ 读取觉醒记录失败: {e}")
-                # 读取失败时允许觉醒，避免阻塞用户
-                return True, ""
+                # 读取失败时拒绝觉醒，保证限制功能的健壮性
+                return False, "❌ 系统错误，暂时无法觉醒，请稍后再试"
 
         # 检查今日记录
         today_record = user_awaken_records.get(today, {})
