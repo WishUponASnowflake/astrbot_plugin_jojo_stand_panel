@@ -201,10 +201,15 @@ class StandDataService:
             tomorrow = (
                 datetime.datetime.now(self.timezone) + datetime.timedelta(days=1)
             ).strftime("%Y-%m-%d")
-            return (
-                False,
-                f"❌ 今日觉醒次数已用完！\n\n你今天已经重新觉醒过了（{last_awaken_time}）\n每天只能重新觉醒 {daily_limit} 次，请明天（{tomorrow}）再来尝试！",
+            # 使用资源文件中的文本
+            from ..resources import UITexts
+
+            error_message = UITexts.AWAKEN_LIMIT_EXCEEDED.format(
+                last_awaken_time=last_awaken_time,
+                daily_limit=daily_limit,
+                tomorrow=tomorrow,
             )
+            return (False, error_message)
 
         return True, ""
 

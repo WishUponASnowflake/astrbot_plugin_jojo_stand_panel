@@ -109,22 +109,21 @@ class AwakenStandHandler(BaseStandHandler):
         current_awaken_count = self.data_service.get_today_awaken_count(user_id)
         limit_hint = self._get_awaken_limit_hint(daily_limit, current_awaken_count)
 
+        # 公共的格式化信息
+        awaken_time = datetime.datetime.now(self.timezone).strftime("%Y-%m-%d %H:%M:%S")
+
         if is_reawaken:
             response_text = UITexts.REAWAKEN_STAND_SUCCESS.format(
                 stand_name=random_name,
                 abilities=formatted_abilities,
-                awaken_time=datetime.datetime.now(self.timezone).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                ),
+                awaken_time=awaken_time,
                 limit_hint=limit_hint,
             )
         else:
             stand_info = f"🌟 替身名：{random_name}\n\n能力值：\n{formatted_abilities}"
             response_text = UITexts.AWAKEN_STAND_SUCCESS.format(
                 stand_info=stand_info,
-                awaken_time=datetime.datetime.now(self.timezone).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                ),
+                awaken_time=awaken_time,
                 limit_hint=limit_hint,
             )
 

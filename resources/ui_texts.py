@@ -1,4 +1,6 @@
 """
+本文档由AI生成
+
 UI文本资源文件，用于存储所有用户界面文本，实现代码与文本的分离
 """
 
@@ -175,3 +177,9 @@ class UITexts:
 
 获得方式：{acquisition_method}
 设置时间：{created_at}"""
+
+    # 觉醒次数限制相关文本
+    AWAKEN_LIMIT_EXCEEDED = """❌ 今日觉醒次数已用完！
+
+你今天已经重新觉醒过了（{last_awaken_time}）
+每天只能重新觉醒 {daily_limit} 次，请明天（{tomorrow}）再来尝试！"""

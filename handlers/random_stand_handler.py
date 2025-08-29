@@ -66,9 +66,7 @@ class RandomStandHandler(BaseStandHandler):
         person_random = random.Random(seed)
 
         # 生成基于种子的随机能力值
-        ability_arr = []
-        for _ in range(6):
-            ability_arr.append(str(person_random.randint(1, 5)))
+        ability_arr = [str(person_random.randint(1, 5)) for _ in range(6)]
         ability_str = ",".join(ability_arr)
 
         # 格式化能力值显示
