@@ -30,7 +30,26 @@ class CustomStandHandler(BaseStandHandler):
             return
 
         abilities_input = message_parts[1]
-        custom_name = " ".join(message_parts[2:]) if len(message_parts) > 2 else None
+        
+        # 解析可选参数：替身名字、替身描述、画布高度
+        # 参数顺序：能力值 [替身名字] [替身描述] [画布高度]
+        custom_name = None
+        desc = None
+        h = None
+        
+        # 解析剩余参数
+        remaining_parts = message_parts[2:] if len(message_parts) > 2 else []
+        
+        # 按顺序解析参数
+        if len(remaining_parts) >= 1:
+            # 第一个参数是替身名字
+            custom_name = remaining_parts[0]
+        if len(remaining_parts) >= 2:
+            # 第二个参数是替身描述
+            desc = remaining_parts[1]
+        if len(remaining_parts) >= 3:
+            # 第三个参数是画布高度
+            h = remaining_parts[2]
 
         # 解析能力值
         ability_str = AbilityUtils.parse_abilities(abilities_input)
@@ -47,9 +66,9 @@ class CustomStandHandler(BaseStandHandler):
         else:
             display_name = custom_name
 
-        # 生成替身面板URL
+        # 生成替身面板URL，包含新的desc和h参数
         image_url = self.api_service.get_image_url(
-            name=display_name, ability=ability_str
+            name=display_name, ability=ability_str, desc=desc, h=h
         )
 
         # 格式化能力值显示

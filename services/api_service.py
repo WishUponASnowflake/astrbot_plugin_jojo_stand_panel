@@ -1,7 +1,3 @@
-"""
-API服务类
-"""
-
 from urllib.parse import urlencode
 from typing import Optional
 
@@ -19,7 +15,11 @@ class StandAPIService:
         self.api_server = api_server
 
     def get_image_url(
-        self, name: Optional[str] = None, ability: Optional[str] = None
+        self, 
+        name: Optional[str] = None, 
+        ability: Optional[str] = None,
+        desc: Optional[str] = None,
+        h: Optional[str] = None
     ) -> str:
         """
         生成替身面板图片URL
@@ -27,6 +27,8 @@ class StandAPIService:
         Args:
             name: 替身名字
             ability: 能力值字符串
+            desc: 替身描述
+            h: 画布高度
 
         Returns:
             str: 图片URL
@@ -36,6 +38,10 @@ class StandAPIService:
             params["name"] = name
         if ability is not None:
             params["ability"] = ability
+        if desc is not None:
+            params["desc"] = desc
+        if h is not None:
+            params["h"] = h
         if not params:
             return self.api_server
         query_string = urlencode(params)

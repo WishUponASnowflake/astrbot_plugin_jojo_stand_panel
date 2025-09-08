@@ -2,7 +2,7 @@
 
 *本README文档由AI生成*
 
-[![Version](https://img.shields.io/badge/version-v2.1.0-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
+[![Version](https://img.shields.io/badge/version-v2.1.1-blue)](https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel)
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-green)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-orange)](./LICENSE)
 
@@ -93,11 +93,11 @@ git clone https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel.git
 
 ### 基础指令
 
-| 指令                          | 功能                       | 示例                 |
-| ----------------------------- | -------------------------- | -------------------- |
-| `/随机替身`                 | 生成随机替身面板（有冷却） | `/随机替身`        |
-| `/今日替身`                 | 获取今日固定替身           | `/今日替身`        |
-| `/替身面板 <能力值> [名字]` | 创建指定能力值的替身       | `/替身面板 AABCDE` |
+| 指令                                        | 功能                                 | 示例                               |
+| ------------------------------------------- | ------------------------------------ | ---------------------------------- |
+| `/随机替身`                               | 生成随机替身面板（有冷却）           | `/随机替身`                      |
+| `/今日替身`                               | 获取今日固定替身                     | `/今日替身`                      |
+| `/替身面板 <能力值> [名字] [描述] [高度]` | 创建指定能力值的替身（支持额外参数） | `/替身面板 AABCDE 替身 强大 800` |
 
 ### 替身管理
 
@@ -139,6 +139,31 @@ git clone https://github.com/Dogend233/astrbot_plugin_jojo_stand_panel.git
 - `AABCDE` - 平衡型替身
 - `ABCDEE` - 特化型替身
 
+### 高级参数说明
+
+`/替身面板` 指令支持额外参数以自定义替身面板：
+
+- **替身名字**：可选，指定替身的名称
+- **替身描述**：可选，替身的描述信息（使用...换行）
+- **画布高度**：可选，指定生成图片的高度
+
+**参数顺序**：
+
+```
+/替身面板 <能力值> [替身名字] [替身描述] [画布高度]
+```
+
+**使用示例**：
+
+```
+/替身面板 AABCDE 替身 强大 800
+```
+
+- 能力值：`AABCDE`
+- 替身名字：`替身`
+- 替身描述：`强大`
+- 画布高度：`800`
+
 ## 🏗️ 项目架构
 
 ```
@@ -179,7 +204,12 @@ astrbot_plugin_jojo_stand_panel/
 
 ## 📝 更新日志
 
-### v2.1.0 (当前版本)
+### v2.1.1 (当前版本)
+
+- 🎨 **参数增强**: `/替身面板` 指令支持额外参数（替身描述和画布高度）
+- 📖 **文档更新**: 更新README文档，添加高级参数使用说明
+
+### v2.1.0
 
 - 🎨 **词库优化**: 默认前后缀词库扩展至50个，支持2500种名称组合
 - ⚙️ **配置优化**: 前后缀配置改为WebUI友好的字符串格式（逗号分隔）
